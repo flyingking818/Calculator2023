@@ -17,12 +17,12 @@ class ViewController: UIViewController {
     var previousNumber: Double = 0
     
     //Flags for state control
-    var performingMath = false
+    var performingMath = false  //This flag indicates whether an operator is pressed.
     var newCalculation = false
     var operation = ""
     var reverseVal: Double = 0
     
-       
+    
     
     @IBOutlet weak var screenLabel: UILabel!
     
@@ -33,15 +33,80 @@ class ViewController: UIViewController {
     
     
     @IBAction func numberButtons(_ sender: UIButton) {
-        
-        
+        if performingMath == true {
+            screenLabel.text = sender.currentTitle
+            numberOnScreen = Double(screenLabel.text!)!
+            performingMath = false  //reset the flag for string concatenation/string appending operation
+        }else{
+            //create multi-digial number - keep adding numbers
+            if screenLabel.text == "0" || newCalculation{
+                screenLabel.text = ""
+            }
+            
+            //Now we are ready to enter the number
+            screenLabel.text = screenLabel.text! + sender.currentTitle!
+            numberOnScreen = Double(screenLabel.text!)!
+            newCalculation = false
+        }
     }
-    
     
     @IBAction func operatorButtons(_ sender: UIButton) {
+        if (screenLabel.text != "" && sender.currentTitle != "%" && sender.currentTitle != "+/-" && sender.currentTitle != "AC" && sender.currentTitle != "=" )
+        { //operators
+            
+            previousNumber = Double(screenLabel.text!)!
+            
+            screenLabel.text = sender.currentTitle!
+            
+            operation = sender.currentTitle!
+            performingMath = true;
+            
+        }
+        else if sender.currentTitle == "=" { //equal = button
+            
+            /*
+             if operation == "÷"{ //Divide
+             screenLabel.text = String(previousNumber / numberOnScreen)
+             }
+             else if operation == "×"{ //Multiply
+             screenLabel.text = String(previousNumber * numberOnScreen)
+             }
+             else if operation == "-"{ //Subtract
+             screenLabel.text = String(previousNumber - numberOnScreen)
+             }
+             else if operation == "+"{ //Add
+             screenLabel.text = String(previousNumber + numberOnScreen)
+             }
+             */
+            //You can also use switch case here
+            
+            switch operation {
+            case "÷":
+                screenLabel.text = String(previousNumber / numberOnScreen)
+            case "×":
+                screenLabel.text = String(previousNumber * numberOnScreen)
+            case "-":
+                screenLabel.text = String(previousNumber - numberOnScreen)
+            case "+":
+                screenLabel.text = String(previousNumber + numberOnScreen)
+            default:
+                screenLabel.text = "Error! Check the entry!"
+            }
+            
+            performingMath = false
+            newCalculation = true
+        }
+        else if sender.currentTitle == "AC"{ //AC button
+            screenLabel.text = "0"
+            previousNumber = 0
+            numberOnScreen = 0
+            operation = ""
+        }
+        //Enhance yours by adding other operators! :)
     }
-    
-    
-
 }
+
+
+
+
 
